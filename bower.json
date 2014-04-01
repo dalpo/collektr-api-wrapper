@@ -1,0 +1,30 @@
+{
+  "name": "collektrApiWrapper",
+  "version": "1.0.0",
+  "description": "A Collektr plugin for developers to wrap a provided json into a board partial with minimal interaction",
+  "main": "./js/collektrApiWrapper.js",
+  "dependencies": {
+    "jquery": ">=1.11.0",
+    "imagesloaded-packaged": "3.1.4",
+    "doT": ">=1.0.1",
+    "equalize": ">=1.0.1"
+  },
+  "keywords": [
+    "Collektr",
+    "Wrapper",
+    "Api"
+  ],
+  "authors": [
+    "Davide Manea"
+  ],
+  "license": "MIT",
+  "homepage": "http://collektr.com",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
