@@ -44,8 +44,6 @@ Full configuration list parameters:
 
       wrapper_class: 'collektr-api-wrapper', // Wrapper name
 
-      css_glyph: 'glyph', // provider class ('glyph' and 'verbose' comes precompiled)
-
       template: { // Key/Value relationship for card-type/template-name
         collektr_photo:         'with_media',
         collektr:               'only_text',
