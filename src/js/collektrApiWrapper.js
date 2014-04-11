@@ -289,7 +289,7 @@ if (typeof doT === 'undefined') { throw new Error('collektrApiWrapper\'s JavaScr
 
   $.fn.collektrApiWrapper.addBasicNode = _addBasicNode;
 
-  $.fn.collektrApiWrapper.resetTemplates = _create_default_template;
+  $.fn.collektrApiWrapper.resetTemplates = _create_default_templates;
 
 } )( jQuery, window );
 
