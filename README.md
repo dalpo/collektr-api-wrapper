@@ -8,7 +8,7 @@ It render Collektr's cards client-side on a given html tag using doT.js as templ
 INSTRUCTIONS
 ---------------
 
-Given the fact you already [signed up](http://collektr.com/users/sign_up) or [signed in](http://collektr.com/users/sign_in) on Collektr and had your own [board](http://collektr.com/boards/new) filled with cards, you should get your `Api Access Token` on the [profile](http://collektr.com/users/edit) page and save it for later use.
+Given the fact you already [signed up](http://collektr.com/users/sign_up) or [signed in](http://collektr.com/users/sign_in) on Collektr and you have your own [board](http://collektr.com/boards/new) filled with cards, you should get your `Api Access Token` on the [profile](http://collektr.com/users/edit) page and save it for later use.
 
 #Markup
 
