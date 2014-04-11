@@ -32,14 +32,11 @@ if (typeof doT === 'undefined') { throw new Error('collektrApiWrapper\'s JavaScr
     // Wrapper name
     wrapper_class: 'collektr-api-wrapper',
 
-    // Enable providers's glyph sprites ['glyph', 'verbose', 'verbose with_prefix']
-    css_glyph: 'glyph',
-
     // Additional search params
     search: '',
 
     // Key/Value relationship for card-type/template-name
-    template: {
+    templates: {
       collektr_photo:         'with_media',
       collektr:               'only_text',
       facebook_photo:         'with_media',
@@ -59,22 +56,22 @@ if (typeof doT === 'undefined') { throw new Error('collektrApiWrapper\'s JavaScr
       tweet_vine:             'with_media_tweet',
       tweet_youtube:          'with_media_video',
       tweet:                  'only_text'
+    },
+    // Template basic nodes
+    nodes: {
+      "section":"<section class='card card_{{=it.id}} {{=it.card_type}}' data-id='{{=it.id}}'>{{#def.box}}</section>",
+      "box":"<div class='box show online tween'>{{#def.thumbnail_wrap}}</div>",
+      "thumbnail_wrap":"<div class='thumbnail-wrap {{=it.provider_name}}'>{{#def.tpl_block}}</div>",
+      "mediaurl":"<figure class='card-image'><img src='{{=it.media_url}}'></figure>",
+      "mediavideo":"<figure class='card-image'><img src='{{=it.options.table.video_thumbnail}}'></figure>",
+      "caption":"<div class='caption'>{{=it.content || ''}}</div>",
+      "captiontext":"<div class='caption eq-cap'><div class='vertical-align'>{{ out+=$.fn.collektrApiWrapper.truncate(it.content); }}</div></div>",
+      "captionempty":"<div class='caption'></div>",
+      "captioneq":"<div class='caption eq-cap'><div class='vertical-align'>{{=it.content}}</div></div>",
+      "created":"<small class='created'>{{ out+=$.fn.collektrApiWrapper.dateFormat(it.created_at); }}</small>",
+      "headerpict":"<hgroup><img class='media-object' src='{{=it.options.table.user_info.profile_picture}}'><h6><p>{{=it.options.table.user_info.username}}</p></h6><div class='glyph'></div></hgroup>",
+      "header":"<hgroup><img class='media-object' src='{{=it.options.table.profile_image_url}}'><h6><p>{{=it.from}}</p></h6><div class='glyph'></div></hgroup>"
     }
-  },
-  // Template basic structure
-  BASIC_NODE_LIST = {
-    "section":"<section class='card card_{{=it.id}} {{=it.card_type}}' data-id='{{=it.id}}'>{{#def.box}}</section>",
-    "box":"<div class='box show online tween'>{{#def.thumbnail_wrap}}</div>",
-    "thumbnail_wrap":"<div class='thumbnail-wrap {{=it.provider_name}}'>{{#def.tpl_block}}</div>",
-    "mediaurl":"<figure class='card-image'><img src='{{=it.media_url}}'></figure>",
-    "mediavideo":"<figure class='card-image'><img src='{{=it.options.table.video_thumbnail}}'></figure>",
-    "caption":"<div class='caption'>{{=it.content || ''}}</div>",
-    "captiontext":"<div class='caption eq-cap'><div class='vertical-align'>{{ out+=$.collektrApiWrapper.truncate(it.content); }}</div></div>",
-    "captionempty":"<div class='caption'></div>",
-    "captioneq":"<div class='caption eq-cap'><div class='vertical-align'>{{=it.content}}</div></div>",
-    "created":"<small class='created'>{{ out+=$.collektrApiWrapper.dateFormat(it.created_at); }}</small>",
-    "headerpict":"<hgroup><img class='media-object' src='{{=it.options.table.user_info.profile_picture}}'><h6><p>{{=it.options.table.user_info.username}}</p></h6><div class='{{ out+=$.collektrApiWrapper.glyph_class(); }}'></div></hgroup>",
-    "header":"<hgroup><img class='media-object' src='{{=it.options.table.profile_image_url}}'><h6><p>{{=it.from}}</p></h6><div class='{{ out+=$.collektrApiWrapper.glyph_class(); }}'></div></hgroup>"
   },
   // Template list
   TEMPLATES = {},
@@ -83,25 +80,20 @@ if (typeof doT === 'undefined') { throw new Error('collektrApiWrapper\'s JavaScr
 
 
   /*-------------------
-        Constructor
-  --------------------*/
-
-  $.collektrApiWrapper = function( options, element, callback ) {
-    $element = $( element );
-    callbackEvent = callback;
-    _init( options );
-    _create_default_templates();
-    _getData();
-  };
-
-  /*-------------------
         Private
   --------------------*/
 
+  var _collektrApiWrapper = function( options, element, callback ) {
+    $element = $( element );
+    callbackEvent = callback;
+    _init( options );
+  };
 
   var _init = function( options ) {
     OPTIONS = {};
     OPTIONS = $.extend( true, {}, DEFAULTS, options );
+    _create_default_templates();
+    _getData();
   };
 
   var _getData = function() {
@@ -151,15 +143,25 @@ if (typeof doT === 'undefined') { throw new Error('collektrApiWrapper\'s JavaScr
   };
 
   var _render_card = function(card) {
-    return TEMPLATES[OPTIONS.template[card.card_type]](card);
+    return TEMPLATES[OPTIONS.templates[card.card_type]](card);
+  };
+
+  var truncate = function(text) {
+    var txt =  (text.length > 300) ? text.substring(0,300)+'...' : text;
+    return txt;
+  };
+
+  var dateFormat = function(date) {
+    var cdate =  new Date(date);
+    return cdate.toLocaleDateString()+" "+cdate.toLocaleTimeString();
   };
 
   var _createTemplate = function(name, block) {
-    TEMPLATES[name] = doT.template("{{#def.section}}",null,$.extend( true, {}, BASIC_NODE_LIST, {"tpl_block":block}));
+    TEMPLATES[name] = doT.template("{{#def.section}}",null,$.extend( true, {}, OPTIONS.nodes, {"tpl_block":block}));
   };
 
   var _addBasicNode = function(name, block) {
-    BASIC_NODE_LIST[name] = block;
+    OPTIONS.nodes[name] = block;
   };
 
   var _create_default_templates = function() {
@@ -172,6 +174,63 @@ if (typeof doT === 'undefined') { throw new Error('collektrApiWrapper\'s JavaScr
     _createTemplate("only_text", "<div class='eq-item'>{{#def.captioneq}}{{#def.header}}</div>{{#def.created}}");
   };
 
+  var _emojify = function (text) {
+    if (hasJEMOJI) {
+      var html = text.trim().replace(/\n/g, '<br/>');
+      return jEmoji.unifiedToHTML(html);
+    }
+  };
+
+  var _urlify = function (text) {
+    var urlRegex = /(https?:\/\/[^\s<]+)/g;
+    return text.replace(urlRegex, function(url) {
+        return '<a href="' + url + '">' + url + '</a>';
+    });
+  };
+
+  var _show = function() {
+    setTimeout(function(){
+      $('section .box').addClass('slidein');
+    },100);
+  };
+
+  var _truncate = function(text) {
+    var txt =  (text.length > 300) ? text.substring(0,300)+'...' : text;
+    return txt;
+  };
+
+  var _dateFormat = function(date) {
+    var cdate =  new Date(date);
+    return cdate.toLocaleDateString()+" "+cdate.toLocaleTimeString();
+  };
+
+  var _equalizeHeights = function() {
+    if (hasIMAGESLOADED && hasEQUALIZE) {
+      imagesLoaded('.collektr-api-wrapper.eq-wrapper img', function() {
+        $('.collektr-api-wrapper.eq-wrapper').equalize({
+          children: '.eq-item',
+          reset: true
+        });
+        $('.collektr-api-wrapper.eq-wrapper').equalize({
+          children: '.eq-cap',
+          reset: true
+        });
+        $('section.collektr, section.facebook_status_link, section.facebook_status, section.tweet').each(function(){
+          var h = $(this).find('.eq-item').outerHeight() - $(this).find('hgroup').outerHeight();
+          $(this).find('.eq-cap').outerHeight(h);
+        });
+        $('.collektr-api-wrapper section .caption').each(function(){
+          var html = $(this).html();
+          html = _emojify(html);
+          html = _urlify(html);
+          $(this).html(html);
+        });
+        _show();
+      });
+    } else {
+      throw new Error('collektrApiWrapper\'s equalizeHeights method requires imagesLoaded.js and equalize.js');
+    }
+  };
 
   /*-------------------
       jQuery Plugin
@@ -201,93 +260,36 @@ if (typeof doT === 'undefined') { throw new Error('collektrApiWrapper\'s JavaScr
           instance._init();
         }
         else {
-          instance = $.data( this, 'collektr-api-wrapper', new $.collektrApiWrapper( options, this, callback ) );
+          instance = $.data( this, 'collektr-api-wrapper', new _collektrApiWrapper( options, this, callback ) );
         }
       });
     }
+
     return this;
   };
 
 
-  /*-------------------
-      Public methods
+ /*-------------------
+    Exposed Utilities
   --------------------*/
 
+  $.fn.collektrApiWrapper.dateFormat = _dateFormat;
 
-  $.collektrApiWrapper.equalizeHeights = function() {
-    if (hasIMAGESLOADED && hasEQUALIZE) {
-      imagesLoaded('.collektr-api-wrapper.eq-wrapper img', function() {
-        $('.collektr-api-wrapper.eq-wrapper').equalize({
-          children: '.eq-item',
-          reset: true
-        });
-        $('.collektr-api-wrapper.eq-wrapper').equalize({
-          children: '.eq-cap',
-          reset: true
-        });
-        $('section.collektr, section.facebook_status_link, section.facebook_status, section.tweet').each(function(){
-          var h = $(this).find('.eq-item').outerHeight() - $(this).find('hgroup').outerHeight();
-          $(this).find('.eq-cap').outerHeight(h);
-        });
-        $('.collektr-api-wrapper section .caption').each(function(){
-          var html = $(this).html();
-          html = $.collektrApiWrapper.emojify(html);
-          html = $.collektrApiWrapper.urlify(html);
-          $(this).html(html);
-        });
-        $.collektrApiWrapper.show();
-      });
-    } else {
-      throw new Error('collektrApiWrapper\'s equalizeHeights method requires imagesLoaded.js and equalize.js');
-    }
-  };
+  $.fn.collektrApiWrapper.truncate = _truncate;
 
-  $.collektrApiWrapper.dateFormat = function(date) {
-    var cdate =  new Date(date);
-    return cdate.toLocaleDateString()+" "+cdate.toLocaleTimeString();
-  };
+  $.fn.collektrApiWrapper.show = _show;
 
-  $.collektrApiWrapper.truncate = function(text) {
-    var txt =  (text.length > 300) ? text.substring(0,300)+'...' : text;
-    return txt;
-  };
+  $.fn.collektrApiWrapper.urlify = _urlify;
 
-  $.collektrApiWrapper.show = function() {
-    setTimeout(function(){
-      $('section .box').addClass('slidein');
-    },100);
-  };
+  $.fn.collektrApiWrapper.emojify = _emojify;
 
-  $.collektrApiWrapper.urlify = function (text) {
-    var urlRegex = /(https?:\/\/[^\s<]+)/g;
-    return text.replace(urlRegex, function(url) {
-        return '<a href="' + url + '">' + url + '</a>';
-    });
-  };
+  $.fn.collektrApiWrapper.equalizeHeights = _equalizeHeights;
 
-  $.collektrApiWrapper.emojify = function (text) {
-    if (hasJEMOJI) {
-      var html = text.trim().replace(/\n/g, '<br/>');
-      return jEmoji.unifiedToHTML(html);
-    }
-  };
+  $.fn.collektrApiWrapper.createTemplate = _createTemplate;
 
-  $.collektrApiWrapper.glyph_class = function() {
-    return OPTIONS.css_glyph;
-  };
+  $.fn.collektrApiWrapper.addBasicNode = _addBasicNode;
 
-  $.collektrApiWrapper.createTemplate = function() {
-   _createTemplate();
- };
-
-  $.collektrApiWrapper.addBasicNode = function() {
-    _addBasicNode();
-  }
-
-  $.collektrApiWrapper.resetTemplates = function() {
-    _create_default_template;
-  };
-
+  $.fn.collektrApiWrapper.resetTemplates = _create_default_template;
 
 } )( jQuery, window );
 

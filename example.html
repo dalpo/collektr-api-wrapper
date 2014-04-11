@@ -11,12 +11,12 @@
   <script src="bower_components/doT/doT.js"></script>
   <script src="bower_components/equalize/js/equalize.js"></script>
 
-  <script type="text/javascript" src="js/jemoji.js"></script>
-  <script type="text/javascript" src="js/collektrApiWrapper.js"></script>
+  <script type="text/javascript" src="src/js/jemoji.js"></script>
+  <script type="text/javascript" src="src/js/collektrApiWrapper.js"></script>
 
 
-  <link href="css/collektr-aw.css" media="screen" rel="stylesheet" type="text/css">
-  <link href="css/collektr-custom-theme.css" media="screen" rel="stylesheet" type="text/css">
+  <link href="src/css/collektr-aw.css" media="screen" rel="stylesheet" type="text/css">
+  <link href="src/css/collektr-custom-theme.css" media="screen" rel="stylesheet" type="text/css">
 
 </head>
 
@@ -28,7 +28,7 @@
 
   <script type="text/javascript">
     $(document).ready(function() {
-      $('.collektr-contents').collektrApiWrapper({auth_token:"1qj2viuRVxy7gk15rb9Z", id:"collektr-api-wrapper", limit:"100"}, $.collektrApiWrapper.equalizeHeights);
+      $('.collektr-contents').collektrApiWrapper({auth_token:"1qj2viuRVxy7gk15rb9Z", id:"collektr-api-wrapper", limit:"100"}, $.fn.collektrApiWrapper.equalizeHeights);
     });
   </script>
 </body>

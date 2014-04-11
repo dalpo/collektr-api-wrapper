@@ -30,7 +30,7 @@ Simple example:
     $('.collektr-contents').collektrApiWrapper({
       auth_token:"API-ACCESS-TOKEN",
       id:"YOUR-BOARD-NAME"
-    );
+    });
 
 Full configuration list parameters:
 
@@ -68,7 +68,48 @@ Full configuration list parameters:
         tweet:                  'only_text'
       }
 
-    );
+      nodes: {  // Template basic nodes
+        "section":"<section class='card card_{{=it.id}} {{=it.card_type}}' data-id='{{=it.id}}'>{{#def.box}}</section>",
+        "box":"<div class='box show online tween'>{{#def.thumbnail_wrap}}</div>",
+        "thumbnail_wrap":"<div class='thumbnail-wrap {{=it.provider_name}}'>{{#def.tpl_block}}</div>",
+        "mediaurl":"<figure class='card-image'><img src='{{=it.media_url}}'></figure>",
+        "mediavideo":"<figure class='card-image'><img src='{{=it.options.table.video_thumbnail}}'></figure>",
+        "caption":"<div class='caption'>{{=it.content || ''}}</div>",
+        "captiontext":"<div class='caption eq-cap'><div class='vertical-align'>{{ out+=$.fn.collektrApiWrapper.truncate(it.content); }}</div></div>",
+        "captionempty":"<div class='caption'></div>",
+        "captioneq":"<div class='caption eq-cap'><div class='vertical-align'>{{=it.content}}</div></div>",
+        "created":"<small class='created'>{{ out+=$.fn.collektrApiWrapper.dateFormat(it.created_at); }}</small>",
+        "headerpict":"<hgroup><img class='media-object' src='{{=it.options.table.user_info.profile_picture}}'><h6><p>{{=it.options.table.user_info.username}}</p></h6><div class='glyph'></div></hgroup>",
+        "header":"<hgroup><img class='media-object' src='{{=it.options.table.profile_image_url}}'><h6><p>{{=it.from}}</p></h6><div class='glyph'></div></hgroup>"
+      }
+
+    });
+
+
+HOW TO BUILD
+------------
+
+I use [Bower](http://bower.io/) and [Broccoli](https://github.com/joliss/broccoli) to manage and export assets. Broccoli is still in alpha, but if you want to follow this approach just:
+
+    npm install -g bower
+    npm install --save broccoli
+    npm install --global broccoli-cli
+
+with the following Libraries:
+
+    npm --save-dev broccoli-bower
+    npm install broccoli-uglify-js
+    npm install broccoli-merge-trees
+    npm install broccoli-concat
+    npm install --save broccoli-csso
+
+To update or install Bower dependencies run
+
+    bower install
+
+and rebuild all the assets with Broccoli
+
+    broccoli build public
 
 
 TODO LIST
@@ -85,7 +126,7 @@ BROWSER SUPPORT
 ---------------
 
 Currently collektrApiWrapper.js works fine in latest Chrome browser, Safari 5.1 and Firefox 10.
-Do not ask about IE, i dont even bother testing on it :)
+Do not ask about IE, I dont even bother testing on it :)
 
 
 LICENSE
