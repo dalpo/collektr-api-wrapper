@@ -71,7 +71,13 @@ if (typeof doT === 'undefined') { throw new Error('collektrApiWrapper\'s JavaScr
       "created":"<small class='created'>{{ out+=$.fn.collektrApiWrapper.dateFormat(it.created_at); }}</small>",
       "headerpict":"<hgroup><img class='media-object' src='{{=it.options.table.user_info.profile_picture}}'><h6><p>{{=it.options.table.user_info.username}}</p></h6><div class='glyph'></div></hgroup>",
       "header":"<hgroup><img class='media-object' src='{{=it.options.table.profile_image_url}}'><h6><p>{{=it.from}}</p></h6><div class='glyph'></div></hgroup>"
+    },
+
+    messages: {
+      '404': '<p class="error">Oops.. Content not found!<br>Try that again in a few moments.</p>',
+      '500': '<p class="error">Server error.<br>Try that again in a few moments.</p>'
     }
+
   },
   // Template list
   TEMPLATES = {},
@@ -118,7 +124,10 @@ if (typeof doT === 'undefined') { throw new Error('collektrApiWrapper\'s JavaScr
     _render_board();
   };
 
-  var _error = function( xhr, ajaxOptions, thrownError ) {};
+  var _error = function( xhr, ajaxOptions, thrownError ) {
+    var msg = OPTIONS.messages[xhr.status];
+    if (msg) $element.html(msg);
+  };
 
   var _complete = function( xhr, text ) { _callback_handling(); };
 
