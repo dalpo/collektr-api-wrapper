@@ -191,6 +191,7 @@ if (typeof doT === 'undefined') { throw new Error('collektrApiWrapper\'s JavaScr
   };
 
   var _urlify = function (text) {
+    if (text == undefined) return text;
     var urlRegex = /(https?:\/\/[^\s<]+)/g;
     return text.replace(urlRegex, function(url) {
         return '<a href="' + url + '">' + url + '</a>';
