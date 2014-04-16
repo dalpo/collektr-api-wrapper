@@ -39,7 +39,7 @@ if (typeof doT === 'undefined') { throw new Error('collektrApiWrapper\'s JavaScr
     templates: {
       collektr_photo:         'with_media',
       collektr:               'only_text',
-      facebook_photo:         'with_media',
+      facebook_photo:         'with_media_facebook',
       facebook_status_link:   'only_text',
       facebook_status_photo:  'with_media_facebook',
       facebook_status_video:  'with_video_facebook',
@@ -49,7 +49,7 @@ if (typeof doT === 'undefined') { throw new Error('collektrApiWrapper\'s JavaScr
       google_activity:        'only_text',
       instagram_image:        'with_media',
       instagram_video:        'with_media',
-      pin:                    'with_media',
+      pin:                    'with_media_pin',
       tweet_photo:            'with_media_tweet',
       tweet_spotify:          'with_media_tweet',
       tweet_vimeo:            'with_media_tweet',
@@ -175,6 +175,7 @@ if (typeof doT === 'undefined') { throw new Error('collektrApiWrapper\'s JavaScr
 
   var _create_default_templates = function() {
     _createTemplate("with_media", "<div class='eq-item'>{{#def.mediaurl}}{{#def.headerpict}}{{#def.caption}}</div>{{#def.created}}");
+    _createTemplate("with_media_pin", "<div class='eq-item'>{{#def.mediaurl}}{{#def.header}}{{#def.caption}}</div>{{#def.created}}");
     _createTemplate("with_media_facebook", "<div class='eq-item'>{{#def.mediaurl}}{{#def.header}}{{#def.caption}}</div>{{#def.created}}");
     _createTemplate("only_text_facebook", "<div class='eq-item'>{{#def.captiontext}}{{#def.header}}</div>{{#def.created}}");
     _createTemplate("with_video_facebook", "<div class='eq-item'>{{#def.mediavideo}}{{#def.header}}{{#def.captionempty}}</div>{{#def.created}}");

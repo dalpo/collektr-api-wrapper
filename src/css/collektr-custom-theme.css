@@ -5,7 +5,7 @@ section .box .thumbnail-wrap { color: #626262; -webkit-border-radius: 5px; -moz-
 section .box .thumbnail-wrap a, section .box .thumbnail-wrap a:active, section .box .thumbnail-wrap a:visited { color: #f00021; }
 section .box .thumbnail-wrap a:focus, section .box .thumbnail-wrap a:hover { color: #f00021; }
 section .box .thumbnail-wrap hgroup { background-color: #fff; display: block; }
-section .box .thumbnail-wrap hgroup h6 { max-width: 275px; padding: 0 0 0 55px; font: 200 16px/22px "Helvetica Neue",Helvetica,Arial,sans-serif; text-align: left; }
+section .box .thumbnail-wrap hgroup h6 { max-width: 275px; padding: 0 27px 0 55px; font: 200 16px/22px "Helvetica Neue",Helvetica,Arial,sans-serif; text-align: left; }
 section .box .thumbnail-wrap hgroup img.media-object { height: 48px; width: 48px; position: absolute; top: -20px; background-color: #fff; border: 2px solid #fff; float: none; left: 5px; }
 section .box .thumbnail-wrap hgroup .glyph { position: absolute; width: 26px; height: 30px; right: 10px; top: 0; display: block; }
 section .box .thumbnail-wrap hgroup .verbose { font-size: 12px; color: #B9B9B9; }
