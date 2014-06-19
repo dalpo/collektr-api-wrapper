@@ -35,6 +35,14 @@ if (typeof doT === 'undefined') { throw new Error('collektrApiWrapper\'s JavaScr
     // Additional search params
     search: '',
 
+    /**
+     * Change the render flow
+     * used to render specific card among a non-linear structure
+     *
+     * @param  {String} all | partial
+     */
+    render_flow: 'all',
+
     // Key/Value relationship for card-type/template-name
     templates: {
       collektr_photo:         'with_media',
@@ -82,6 +90,7 @@ if (typeof doT === 'undefined') { throw new Error('collektrApiWrapper\'s JavaScr
   // Template list
   TEMPLATES = {},
   BASE_URL = 'http://collektr.com/api/1/boards',
+  RENDER = [],
   jsonData = '', $element, callbackEvent;
 
 
@@ -121,7 +130,7 @@ if (typeof doT === 'undefined') { throw new Error('collektrApiWrapper\'s JavaScr
 
   var _success = function( data ) {
     jsonData = data.response;
-    _render_board();
+    _compose_board();
   };
 
   var _error = function( xhr, ajaxOptions, thrownError ) {
@@ -142,17 +151,28 @@ if (typeof doT === 'undefined') { throw new Error('collektrApiWrapper\'s JavaScr
     return BASE_URL+'/'+OPTIONS.id+'/cards'+OPTIONS.search;
   };
 
-  var _render_board = function() {
-    var html_output = "";
-    // var scopedObj = this;
+  var _compose_board = function() {
     $.each(jsonData, function(index, card){
-      html_output += _render_card(card);
+      var contents = _urlify(card.content);
+      if (hasJEMOJI) contents = _emojify(contents);
+      card.content = contents;
+      RENDER.push(_render_card(card));
     });
-    $element.html("<div class='"+OPTIONS.wrapper_class+" eq-wrapper'>"+html_output+"</div>");
+    if (OPTIONS.render_flow == 'all') {
+      _render_board();
+    }
+  };
+
+  var _render_board = function() {
+    $element.html("<div class='"+OPTIONS.wrapper_class+" eq-wrapper'>"+RENDER.join('')+"</div>");
   };
 
   var _render_card = function(card) {
     return TEMPLATES[OPTIONS.templates[card.card_type]](card);
+  };
+
+  var _render_partial = function(index) {
+    return RENDER[index];
   };
 
   var truncate = function(text) {
@@ -230,12 +250,6 @@ if (typeof doT === 'undefined') { throw new Error('collektrApiWrapper\'s JavaScr
           var h = $(this).find('.eq-item').outerHeight() - $(this).find('hgroup').outerHeight();
           $(this).find('.eq-cap').outerHeight(h);
         });
-        $('.collektr-api-wrapper section .caption').each(function(){
-          var html = $(this).html();
-          html = _emojify(html);
-          html = _urlify(html);
-          $(this).html(html);
-        });
         _show();
       });
     } else {
@@ -247,37 +261,38 @@ if (typeof doT === 'undefined') { throw new Error('collektrApiWrapper\'s JavaScr
       jQuery Plugin
   --------------------*/
 
-  $.fn.collektrApiWrapper = function( options, callback ) {
-    if ( typeof options === 'string' ) {
-      var args = Array.prototype.slice.call( arguments, 1 );
-      this.each(function() {
-        var instance = $.data( this, 'collektr-api-wrapper' );
-        if ( !instance ) {
-          logError( "cannot call methods on collektr-api-wrapper prior to initialization; " +
-          "attempted to call method '" + options + "'" );
-          return;
-        }
-        if ( !$.isFunction( instance[options] ) || options.charAt(0) === "_" ) {
-          logError( "no such method '" + options + "' for collektr-api-wrapper instance" );
-          return;
-        }
-        instance[ options ].apply( instance, args );
-      });
+  $.fn.extend({
+    collektrApiWrapper: function( options, callback ) {
+      if ( typeof options === 'string' ) {
+        var args = Array.prototype.slice.call( arguments, 1 );
+        this.each(function() {
+          var instance = $.data( this, 'collektr-api-wrapper' );
+          if ( !instance ) {
+            logError( "cannot call methods on collektr-api-wrapper prior to initialization; " +
+            "attempted to call method '" + options + "'" );
+            return;
+          }
+          if ( !$.isFunction( instance[options] ) || options.charAt(0) === "_" ) {
+            logError( "no such method '" + options + "' for collektr-api-wrapper instance" );
+            return;
+          }
+          instance[ options ].apply( instance, args );
+        });
+      }
+      else {
+        this.each(function() {
+          var instance = $.data( this, 'collektr-api-wrapper' );
+          if ( instance ) {
+            instance._init();
+          }
+          else {
+            instance = $.data( this, 'collektr-api-wrapper', new _collektrApiWrapper( options, this, callback ) );
+          }
+        });
+      }
+      return this;
     }
-    else {
-      this.each(function() {
-        var instance = $.data( this, 'collektr-api-wrapper' );
-        if ( instance ) {
-          instance._init();
-        }
-        else {
-          instance = $.data( this, 'collektr-api-wrapper', new _collektrApiWrapper( options, this, callback ) );
-        }
-      });
-    }
-
-    return this;
-  };
+  });
 
 
  /*-------------------
@@ -301,6 +316,8 @@ if (typeof doT === 'undefined') { throw new Error('collektrApiWrapper\'s JavaScr
   $.fn.collektrApiWrapper.addBasicNode = _addBasicNode;
 
   $.fn.collektrApiWrapper.resetTemplates = _create_default_templates;
+
+  $.fn.collektrApiWrapper.getCard = _render_partial;
 
 } )( jQuery, window );
 

@@ -1,4 +1,4 @@
-var findBowerTrees = require('broccoli-bower')
+var findBowerTrees = require('broccoli-bower');
 var uglifyJavaScript = require('broccoli-uglify-js');
 var mergeTrees = require('broccoli-merge-trees');
 var concat = require('broccoli-concat');
@@ -45,8 +45,7 @@ cssTreeMin = csso(cssTreeMin)
   Packaged version
   is an alpha version, its too soon to get it works
  ------------------*/
-var packageTree = [sourceTree]
-packageTree = packageTree.concat(findBowerTrees())
+var packageTree = findBowerTrees()
 packageTree = concat(packageTree, {
   inputFiles: [
     'js/*.js'
@@ -57,5 +56,8 @@ packageTree = uglifyJavaScript(packageTree, {mangle: true, compress: true});
 
 
 /* EXPORT */
+/*
+  cmd: broccoli build public
+*/
 module.exports = mergeTrees([jsTree, jsTreeMin, cssTree, cssTreeMin]);
 
