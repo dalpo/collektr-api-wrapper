@@ -29,7 +29,11 @@
   <script type="text/javascript">
     // board like example
     $(document).ready(function() {
-      board = $('.collektr-contents').collektrApiWrapper({auth_token:"1qj2viuRVxy7gk15rb9Z", id:"collektr-api-wrapper", limit:"100"}, $.fn.collektrApiWrapper.equalizeHeights);
+      // add source link as image wrapper
+      var mediaurl = "<figure class='card-image'>{{? it.options.table.link}}<a href='{{=it.options.table.link}}'>{{?}}<img src='{{=it.media_url}}'>{{? it.options.table.link}}</a>{{?}}</figure>";
+      var mediavideo = "<figure class='card-image'>{{? it.options.table.link}}<a href='{{=it.options.table.link}}'>{{?}}<img src='{{=it.options.table.video_thumbnail}}'>{{? it.options.table.link}}</a>{{?}}</figure>";
+      // init board
+      board = $('.collektr-contents').collektrApiWrapper({auth_token:"1qj2viuRVxy7gk15rb9Z", id:"collektr-api-wrapper", limit:"100", nodes:{'mediaurl':mediaurl, 'mediavideo':mediavideo}}, $.fn.collektrApiWrapper.equalizeHeights);
     });
   </script>
 </body>
